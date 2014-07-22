@@ -24,8 +24,8 @@ of a maven module:
     
 ## Options:
 
-   -v      : Verbose mode. Show more details about which files are different.
-   -i name : ignore changed files that match the specified name
+    -v      : Verbose mode. Show more details about which files are different.
+    -i name : ignore changed files that match the specified name
 
 ## Example: 
 
