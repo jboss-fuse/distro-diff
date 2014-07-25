@@ -108,7 +108,11 @@ public class Main {
             this.childReports = childReports;
         }
 
-        public void dump(PrintStream out, boolean verbose, String sp1, String sp2, String indent) {
+        public void dump(PrintStream out, boolean verbose, String sp1, String sp2, String indent, String verboseFile) {
+
+            if( path1.endsWith(verboseFile) || path2.endsWith(verboseFile) ) {
+                verbose = true;
+            }
 
             String fp1 = path1;
             fp1 = fp1.replaceFirst("^"+Pattern.quote(sp1), "");
@@ -116,19 +120,23 @@ public class Main {
             String fp2 = path2;
             fp2 = fp2.replaceFirst("^"+Pattern.quote(sp2), "");
 
-            if( note!=null && ( verbose || ( file  && !childReports.isEmpty())) ) {
-                if( !fp2.equals("<missing>") ) {
-                    out.println(String.format("%s%s: %s", indent, fp2, note));
-                } else {
-                    out.println(String.format("%s%s: %s\n", indent, fp1, note));
+            if( verbose || verboseFile==null  ) {
+                if( note!=null && ( verbose || ( file  && !childReports.isEmpty())) ) {
+                    if( !fp2.equals("<missing>") ) {
+                        out.println(String.format("%s%s: %s", indent, fp2, note));
+                    } else {
+                        out.println(String.format("%s%s: %s\n", indent, fp1, note));
+                    }
                 }
             }
 
-            for (Report childReport : childReports) {
-                if( file ) {
-                    childReport.dump(out, verbose, path1+"!", path2+"!", indent+"  ");
-                } else {
-                    childReport.dump(out, verbose, sp1, sp2, indent);
+            if( !file || verbose  ) {
+                for (Report childReport : childReports) {
+                    if( file ) {
+                        childReport.dump(out, verbose, path1+"!", path2+"!", indent+"  ", verboseFile);
+                    } else {
+                        childReport.dump(out, verbose, sp1, sp2, indent, verboseFile);
+                    }
                 }
             }
         }
@@ -138,6 +146,7 @@ public class Main {
 
         HashSet<Pattern> ignoredPaths = new HashSet<>();
         boolean verbose = false;
+        String verboseFile = null;
 
         public void exec(String[] args) throws IOException {
 
@@ -157,6 +166,8 @@ public class Main {
                     ignoredPaths.add(Pattern.compile(Pattern.quote(shiftArgument(arguments, "-i"))));
                 } else if( arg.equals("-v") ) {
                     verbose = true;
+                } else if( arg.equals("-vf") ) {
+                    verboseFile = shiftArgument(arguments, "-vf");
                 } else {
                     arguments.addFirst(arg);
                     break;
@@ -175,7 +186,7 @@ public class Main {
             Report diff = compare("", "", file1, file2);
             if( diff!=null ) {
                 diff.file = false;
-                diff.dump(System.out, verbose, "", "", "");
+                diff.dump(System.out, verbose, "", "", "", verboseFile);
             } else {
                 System.out.println("No difference found.");
             }
