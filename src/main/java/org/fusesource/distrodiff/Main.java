@@ -108,9 +108,9 @@ public class Main {
             this.childReports = childReports;
         }
 
-        public void dump(PrintStream out, boolean verbose, String sp1, String sp2, String indent, String verboseFile) {
+        public void dump(PrintStream out, boolean verbose, String sp1, String sp2, String indent, final String verboseFile, final int verboseLevel) {
 
-            if( path1.endsWith(verboseFile) || path2.endsWith(verboseFile) ) {
+            if( verboseFile!=null && (path1.endsWith(verboseFile) || path2.endsWith(verboseFile)) ) {
                 verbose = true;
             }
 
@@ -120,22 +120,20 @@ public class Main {
             String fp2 = path2;
             fp2 = fp2.replaceFirst("^"+Pattern.quote(sp2), "");
 
-            if( verbose || verboseFile==null  ) {
-                if( note!=null && ( verbose || ( file  && !childReports.isEmpty())) ) {
-                    if( !fp2.equals("<missing>") ) {
-                        out.println(String.format("%s%s: %s", indent, fp2, note));
-                    } else {
-                        out.println(String.format("%s%s: %s\n", indent, fp1, note));
-                    }
+            if( note!=null && (verboseFile==null || verbose)) {
+                if( !fp2.equals("<missing>") ) {
+                    out.println(String.format("%s%s: %s", indent, fp2, note));
+                } else {
+                    out.println(String.format("%s%s: %s\n", indent, fp1, note));
                 }
             }
 
-            if( !file || verbose  ) {
+            if( verbose || verboseLevel > 0 || verboseFile!=null ) {
                 for (Report childReport : childReports) {
                     if( file ) {
-                        childReport.dump(out, verbose, path1+"!", path2+"!", indent+"  ", verboseFile);
+                        childReport.dump(out, verbose, path1+"!", path2+"!", indent+"  ", verboseFile, verboseLevel-1);
                     } else {
-                        childReport.dump(out, verbose, sp1, sp2, indent, verboseFile);
+                        childReport.dump(out, verbose, sp1, sp2, indent, verboseFile, verboseLevel);
                     }
                 }
             }
@@ -186,7 +184,7 @@ public class Main {
             Report diff = compare("", "", file1, file2);
             if( diff!=null ) {
                 diff.file = false;
-                diff.dump(System.out, verbose, "", "", "", verboseFile);
+                diff.dump(System.out, verbose, "", "", "", verboseFile, verboseFile==null? 1 : 0);
             } else {
                 System.out.println("No difference found.");
             }

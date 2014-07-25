@@ -30,4 +30,15 @@ of a maven module:
 
 ## Example: 
 
-    java -jar target/distrodiff-1.0-SNAPSHOT.jar ~/opt/jboss-fuse-full-6.1.0.redhat-379.zip  ~/opt/jboss-fuse-full-6.1.0.redhat-387.zip 
+    $ java -jar distrodiff-1.0-SNAPSHOT.jar boss-fuse-full-6.1.0.redhat-379.zip jboss-fuse-full-6.1.0.redhat-387.zip 
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/system/io/fabric8/fabric-zookeeper-commands/1.0.0.redhat-387/fabric-zookeeper-commands-1.0.0.redhat-387.jar: different
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/system/io/fabric8/fabric-project-deployer/1.0.0.redhat-387/fabric-project-deployer-1.0.0.redhat-387.jar: different
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/system/io/fabric8/fabric-camel-autotest/1.0.0.redhat-387/fabric-camel-autotest-1.0.0.redhat-387.jar: different
+    ...
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/lib/esb-version.jar: different
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/extras/apache-cxf-2.7.0.redhat-610387.zip: different
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/extras/apache-camel-2.12.0.redhat-610387.zip: different
+
+    $ java -jar distrodiff-1.0-SNAPSHOT.jar -vf fabric-zookeeper-commands-1.0.0.redhat-387.jar jboss-fuse-full-6.1.0.redhat-387.zip 
+    jboss-fuse-full-6.1.0.redhat-387.zip!/jboss-fuse-6.1.0.redhat-387/system/io/fabric8/fabric-zookeeper-commands/1.0.0.redhat-387/fabric-zookeeper-commands-1.0.0.redhat-387.jar: different
+      /io/fabric8/zookeeper/commands/Create.class: A binary difference found at byte offset: 9
